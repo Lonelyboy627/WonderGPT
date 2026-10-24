@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wondergpt"
+version = "0.1.0"
+description = "A small GPT Transformer trained from scratch on public-domain English fantasy"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = ["torch>=2.6,<3", "numpy>=1.26,<3"]
+
+[project.scripts]
+wondergpt-prepare = "wondergpt.data:main"
+wondergpt-train = "wondergpt.train:main"
+wondergpt-sample = "wondergpt.sample:main"
+wondergpt-export = "wondergpt.export:main"
+
+[tool.setuptools]
+packages = ["wondergpt"]

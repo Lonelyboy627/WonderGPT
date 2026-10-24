@@ -1,0 +1,28 @@
+# Local environments and editor settings
+.venv/
+venv/
+.vscode/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.env
+.env.*
+
+# Prepared data and training output are reproducible, potentially large artifacts.
+data/
+out/
+*.pt
+*.pth
+*.tmp
+*.zip
+
+# Existing local working copies and generated corpus duplicates
+/input.txt
+/READ.MEtxt.txt
+/legacy/
+/public_domain_fantasy_en/input.txt
+/public_domain_fantasy_en/books/
+/public_domain_fantasy_en.zip
+/_publish_github.py

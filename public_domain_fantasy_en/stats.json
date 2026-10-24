@@ -1,0 +1,27 @@
+{
+  "books": 16,
+  "characters": 5526085,
+  "utf8_bytes": 5602799,
+  "words": 1045649,
+  "unique_characters": 100,
+  "sha256": "7493da7aa264a3ce3dd0e9a451947ca28677599a26a3cd7400f25b63612122d7",
+  "train_characters": 5068218,
+  "val_characters": 457865,
+  "validation_book_ids": [
+    12,
+    709
+  ],
+  "val_fraction": 0.08285525208361873,
+  "encoding": "UTF-8 without BOM",
+  "newlines": "LF",
+  "book_separator": "three newline characters",
+  "quality_checks": [
+    "Strict UTF-8 decoding",
+    "Raw and cleaned SHA-256",
+    "Explicit catalogue public-domain marker and author dates",
+    "Reviewed narrative boundaries and endings",
+    "Numbered chapter counts and headings preserved",
+    "No duplicate complete books",
+    "No Gutenberg boilerplate or replacement characters"
+  ]
+}

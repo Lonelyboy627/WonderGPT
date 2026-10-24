@@ -1,0 +1,24 @@
+# About 10.8M parameters. Intended for a single GPU; reduce batch_size if necessary.
+[model]
+block_size = 256
+n_layer = 6
+n_head = 6
+n_embd = 384
+dropout = 0.1
+
+[train]
+data_dir = "data/fantasy"
+out_dir = "out/small"
+device = "cuda"
+batch_size = 16
+gradient_accumulation_steps = 4
+max_iters = 5000
+eval_interval = 250
+eval_iters = 20
+log_interval = 10
+learning_rate = 0.0003
+min_lr = 0.00003
+warmup_iters = 100
+lr_decay_iters = 5000
+threads = 4
+amp = true

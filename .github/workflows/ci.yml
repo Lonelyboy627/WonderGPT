@@ -1,0 +1,19 @@
+name: tests
+on: [push, pull_request]
+jobs:
+  cpu:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.11', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install -r requirements.txt --index-url https://download.pytorch.org/whl/cpu
+      - run: python -m unittest discover -s tests -v
+      - run: python prepare.py
+      - run: python train.py --config configs/smoke.toml
+      - run: python train.py --config configs/smoke.toml --resume out/smoke/latest.pt --max-iters 12
+      - run: python sample.py --checkpoint out/smoke/latest.pt --max-new-tokens 32 --device cpu

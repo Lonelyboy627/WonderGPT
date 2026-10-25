@@ -1,0 +1,24 @@
+# 8x tiny's context, about 11.08M parameters. Train from scratch in a separate directory.
+[model]
+block_size = 1024
+n_layer = 6
+n_head = 6
+n_embd = 384
+dropout = 0.1
+
+[train]
+data_dir = "data/fantasy"
+out_dir = "out/small-1024"
+device = "cuda"
+batch_size = 4
+gradient_accumulation_steps = 4
+max_iters = 20000
+eval_interval = 250
+eval_iters = 10
+log_interval = 10
+learning_rate = 0.0003
+min_lr = 0.00003
+warmup_iters = 200
+lr_decay_iters = 20000
+threads = 4
+amp = true

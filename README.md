@@ -21,6 +21,8 @@
 | `smoke.toml` | 2 | 2 | 64 | 32 | 108,544 |
 | `tiny.toml` | 4 | 4 | 128 | 128 | 822,528 |
 | `small.toml` | 6 | 6 | 384 | 256 | 10,784,256 |
+| `small_512.toml` | 6 | 6 | 384 | 512 | 10,882,560 |
+| `small_1024.toml` | 6 | 6 | 384 | 1024 | 11,079,168 |
 
 ## Windows 快速开始
 
@@ -68,6 +70,34 @@ Linux / macOS 可以使用 `python3 -m venv .venv`，把上述解释器路径换
 ```
 
 `tiny.toml` 的 `device = "auto"` 也会使用可用的 GPU。显存不足时先降低 `batch_size`；可增加 `gradient_accumulation_steps` 保持每次更新的总字符数。`small` 的默认有效批量为 `16 × 256 × 4 = 16,384` 个字符。
+
+### 更长上下文的 small 模型
+
+`small_512.toml` 和 `small_1024.toml` 将模型增加为 6 层、6 个注意力头、384 维隐藏向量。二者分别使用 512 和 1024 个字符的上下文，是 tiny 的 4 倍和 8 倍。这里的长度按字符计数，不是单词数。
+
+| 配置 | 每个微批次 | 梯度累积 | 每次更新处理的字符数 | 输出目录 |
+|---|---:|---:|---:|---|
+| `small_512.toml` | 8 × 512 | 4 | 16,384 | `out/small-512` |
+| `small_1024.toml` | 4 × 1024 | 4 | 16,384 | `out/small-1024` |
+
+新模型从零训练，计划 20,000 步；学习率用 200 步预热，并在 20,000 步内从 `0.0003` 余弦衰减到 `0.00003`。配置使用独立输出目录，保留 tiny 的断点。结构和位置嵌入尺寸发生了变化，不能使用 tiny 的 `--resume`。
+
+```powershell
+# 1024 字符上下文，从零训练
+.\.venv\Scripts\python.exe train.py --config configs/small_1024.toml
+
+# 中断后继续同一训练，目标总步数仍为 20,000
+.\.venv\Scripts\python.exe train.py --config configs/small_1024.toml --resume out/small-1024/latest.pt --max-iters 20000
+
+# 测试新模型，使用和 tiny 相同的提示及采样参数进行比较
+.\.venv\Scripts\python.exe sample.py --checkpoint out/small-1024/best.pt --device cuda --prompt "The princess entered the forest and heard a voice behind her." --max-new-tokens 800 --temperature 0.7 --top-k 30 --num-samples 3 --seed 42 --output out/small-1024/quality_test.txt
+```
+
+若选择 512 字符版本，将配置路径换成 `configs/small_512.toml`，并将断点和采样输出目录换成 `out/small-512`。开始训练前调整批次参数；续训校验要求使用与该断点一致的批次和梯度累积设置。
+
+新增上下文和容量是可比较的训练实验，不保证短时间内就能生成连贯故事。不同上下文配置的验证窗口不同，比较 loss 时也要同时记录配置并检查实际生成文本。
+
+两套配置已在 8 GB RTX 4060 上通过训练、断点续训和采样检查，显存测量及检查范围见 [长上下文验证记录](examples/context_upgrade_validation.md)。
 
 ### 断点续训
 
